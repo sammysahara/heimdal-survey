@@ -322,4 +322,242 @@ body {
   border: 2px solid var(--primary-yellow-dark);
 }
 
+/* NEW STYLING FOR LAB 5 */
 
+/* toast notification styling for feedback */
+#toastContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+}
+
+.toast-notification {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    font-size: 0.95rem;
+    animation: toastSlideIn 0.3s ease;
+    position: relative;
+}
+
+.toast-warning {
+    background-color: #fff8e1;
+    border-left: 5px solid var(--primary-yellow);
+    color: #5a4000;
+}
+
+.toast-error {
+    background-color: #ffebee;
+    border-left: 5px solid var(--error-red);
+    color: #7b1a1a;
+}
+
+.toast-success {
+    background-color: #e8f5e9;
+    border-left: 5px solid var(--success-green);
+    color: #1b4a1e;
+}
+
+.toast-info {
+    background-color: #e3f2fd;
+    border-left: 5px solid #1976d2;
+    color: #0d2f5a;
+}
+
+.toast-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.toast-message {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 4px;
+    opacity: 0.6;
+    line-height: 1;
+    color: inherit;
+}
+
+.toast-close:hover { opacity: 1; }
+
+.toast-fade-out {
+    animation: toastFadeOut 0.3s ease forwards;
+}
+
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(60px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(60px); }
+}
+
+/* disabling button hint text*/
+.btn-hint {
+    font-size: 0.82rem;
+    color: var(--grey-medium);
+    margin-top: 6px;
+    display: none;
+    padding: 4px 8px;
+    background: #f9f9f9;
+    border-left: 3px solid var(--primary-yellow);
+    border-radius: 0 6px 6px 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-hint.visible {
+    display: block;
+    animation: hintFadeIn 0.3s ease;
+}
+
+@keyframes hintFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* we always want to show hint when button is disabled and next to it */
+button:disabled + .btn-hint {
+    display: block;
+}
+
+/* state lables */
+.step-completed {
+    color: var(--success-green) !important;
+    font-weight: bold !important;
+}
+
+.step-completed::before {
+    content: "✓ ";
+}
+
+.step-clickable {
+    cursor: pointer;
+    text-decoration: underline dotted;
+}
+
+.step-clickable:hover {
+    color: var(--primary-yellow-dark) !important;
+    text-decoration: underline;
+}
+
+.step-upcoming {
+    color: var(--grey-medium);
+    opacity: 0.65;
+}
+
+/* card selection with animation*/
+@keyframes cardPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+    70%  { box-shadow: 0 0 0 12px rgba(255, 193, 7, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+}
+
+.service-card.just-selected,
+.staff-card.just-selected {
+    animation: cardPulse 0.5s ease;
+}
+
+/* to create a good mapping, we will highlight the recommended staff*/
+.staff-card.recommended-match {
+    border-color: var(--primary-yellow) !important;
+    background: linear-gradient(135deg, #fffde7 0%, #ffffff 100%);
+}
+
+.recommended-badge {
+    display: inline-block;
+    background-color: var(--primary-yellow);
+    color: var(--grey-dark);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* per field validation*/
+.form-control.is-valid {
+    border-color: var(--success-green) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%234CAF50' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+}
+
+.form-control.is-invalid {
+    border-color: var(--error-red) !important;
+}
+
+.invalid-feedback {
+    display: none;
+    color: var(--error-red);
+    font-size: 0.82rem;
+    margin-top: 4px;
+}
+
+.form-control.is-invalid + .form-text + .invalid-feedback,
+.form-control.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+/* contactFormProgress pill */
+#contactFormProgress {
+    font-size: 0.85rem;
+    color: var(--grey-medium);
+    font-style: italic;
+    min-height: 1.2em;
+}
+
+.field-required-note {
+    font-size: 0.8rem;
+    color: var(--grey-medium);
+    font-weight: normal;
+}
+
+/* submit button loading state */
+#submitBooking.submitting {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* as constraint: disabled calendar prev button clear visual*/
+#calPrev:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+#step4 .col-md-6 {
+    margin-bottom: 0;
+}
+
+/* payment icons */
+.payment-icons i {
+  font-size: 1.4rem;
+  margin-right: 10px;
+  color: var(--grey-medium);
+}
+
+.payment-icons i:last-child {
+  margin-right: 0;
+}
+
+.input-group-text i {
+  color: var(--primary-yellow-dark);
+}

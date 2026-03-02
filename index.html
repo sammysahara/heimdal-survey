@@ -36,6 +36,12 @@
         </div>
     </header>
 
+    <!-- adding the toast notification container -->
+    <div id="toastContainer" aria-live="assertive" aria-atomic="false" role="status"></div>
+    
+    <!-- using ARIA live region for screen reader announcements -->
+    <div id="ariaLive" aria-live="polite" aria-atomic="true" class="visually-hidden"></div>
+
     <!-- content part -->
     <main class="container my-5">
         <!-- we're using a div for the progress bar of course-->
@@ -82,6 +88,7 @@
                 <button id="nextToStep2" class="btn btn-primary btn-lg" disabled>
                     Next: Select Staff <i class="bi bi-arrow-right"></i>
                 </button>
+                <div class="btn-hint" id="hint-nextToStep2">Please select a service above to continue.</div>
             </div>
         </div>
 
@@ -113,6 +120,7 @@
                 <button id="nextToStep3" class="btn btn-primary btn-lg" disabled>
                     Continue to Scheduling <i class="bi bi-arrow-right"></i>
                 </button>
+                <div class="btn-hint" id="hint-nextToStep3">Please select a technician above to continue.</div>
             </div>
         </div>
 
@@ -174,6 +182,7 @@
                                 <button id="nextToStep4" class="btn btn-primary btn-lg" type="button" disabled>
                                     Next: Contact Info <i class="bi bi-arrow-right"></i>
                                 </button>
+                                <div class="btn-hint" id="hint-nextToStep4">Select a date and time to continue.</div>
                             </div>
                         </div>
                     </div>
@@ -217,31 +226,33 @@
             </h2>
             <p class="lead mb-4">Enter your contact information here. You must provide email or phone</p>
             
-            <div class="col-md-6">
-                <label for="contactFirstName" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="contactFirstName" required>
+            <div class="col-md-6 mb-3">
+                <label for="contactFirstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="contactFirstName" required autocomplete="given-name" placeholder="e.g. John">
+                <div class="invalid-feedback" id="feedback-firstName"></div>
             </div>
 
-            <div class="col-md-6">
-                <label for="contactLastName" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="contactLastName" required>
+            <div class="col-md-6 mb-3">
+                <label for="contactLastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="contactLastName" required autocomplete="family-name" placeholder="e.g. Smith">
+                <div class="invalid-feedback" id="feedback-lastName"></div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
                 <label for="contactEmail" class="form-label">
-                    Email
+                    Email <span class="field-required-note">(required if no phone)</span>
                 </label>
-                <input type="email" class="form-control" id="contactEmail">
+                <input type="email" class="form-control" id="contactEmail" autocomplete="email" placeholder="e.g. john@example.com">
+                <div class="invalid-feedback" id="feedback-email"></div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
                 <label for="contactPhone" class="form-label">
-                    Phone Number
+                    Phone Number <span class="field-required-note">(required if no email)</span>
                 </label>
-                <input type="tel" class="form-control" id="contactPhone">
-                <div id="passwordHelpInline" class="form-text">
-                    Must not include area code, brackets, or dashes.
-                </div>
+                <input type="tel" class="form-control" id="contactPhone" inputmode="numeric" autocomplete="tel" placeholder="e.g. 6135552453" maxlength="10">
+                <div class="form-text">10 digits only — no spaces, brackets, or dashes.</div>
+                <div class="invalid-feedback" id="feedback-phone"></div>
             </div>
 
             <div class="col-12">
@@ -251,13 +262,15 @@
                 <textarea class="form-control" id="contactNotes" rows="3"></textarea>
             </div>
 
-            <div class="mt-4 d-flex gap-2">
+            <div class="mt-3 mb-2" id="contactFormProgress"></div>
+            <div class="mt-4 d-flex gap-2 flex-wrap">
                 <button id="backToStep3" class="btn btn-secondary btn-lg">
                     <i class="bi bi-arrow-left"></i> Back to Scheduling
                 </button>
                 <button id="nextToStep5" class="btn btn-primary btn-lg" disabled>
                     Continue to Submit <i class="bi bi-arrow-right"></i>
                 </button>
+                <div class="btn-hint" id="hint-nextToStep5">Fill in your name and at least one contact method.</div>
             </div>
         </div>
 
@@ -282,6 +295,76 @@
                     <li><strong>Email:</strong> <span id="finalEmail"></span></li>
                     <li><strong>Phone:</strong> <span id="finalPhone"></span></li>
                 </ul>
+
+                <!-- payments -->
+                <hr class="my-4">
+
+                <h5 class="card-title mb-3">
+                <i class="bi bi-credit-card-2-front"></i> Payment Details
+                </h5>
+
+                <div class="payment-icons mb-2" aria-label="Accepted payment methods">
+                <i class="bi bi-credit-card" title="Credit card" aria-hidden="true"></i>
+                <i class="bi bi-credit-card-2-front" title="Card" aria-hidden="true"></i>
+                <i class="bi bi-credit-card-2-back" title="Card" aria-hidden="true"></i>
+                <i class="bi bi-shield-lock" title="Secure" aria-hidden="true"></i>
+                </div>
+
+                <div class="row g-3">
+                <div class="col-12">
+                    <label for="cardName" class="form-label">Name on card <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
+                    <input type="text" class="form-control" id="cardName" autocomplete="cc-name" placeholder="e.g. John Smith">
+                    </div>
+                    <div class="invalid-feedback" id="feedback-cardName"></div>
+                </div>
+
+                <div class="col-12">
+                    <label for="cardNumber" class="form-label">Card number <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
+                    <input type="text" class="form-control" id="cardNumber"
+                            inputmode="numeric" autocomplete="cc-number"
+                            placeholder="1234 5678 9012 3456" maxlength="19">
+                    </div>
+                    <div class="invalid-feedback" id="feedback-cardNumber"></div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                    <label for="cardExp" class="form-label">Expiry (MM/YY) <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar2-check"></i></span>
+                    <input type="text" class="form-control" id="cardExp"
+                            inputmode="numeric" autocomplete="cc-exp"
+                            placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div class="invalid-feedback" id="feedback-cardExp"></div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label for="cardCvv" class="form-label">CVV <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                    <input type="password" class="form-control" id="cardCvv"
+                            inputmode="numeric" autocomplete="cc-csc"
+                            placeholder="123" maxlength="4">
+                    </div>
+                    <div class="invalid-feedback" id="feedback-cardCvv"></div>
+                </div>
+
+                <div class="col-12 col-md-5">
+                    <label for="billingPostal" class="form-label">Billing postal code <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                    <input type="text" class="form-control" id="billingPostal"
+                            autocomplete="postal-code" placeholder="e.g. K1A0B1" maxlength="7">
+                    </div>
+                    <div class="invalid-feedback" id="feedback-billingPostal"></div>
+                </div>
+                </div>
+
+                <div class="mt-3 mb-2" id="paymentFormProgress"></div>
 
                 <div class="alert alert-info small mb-0">
                     Submitting will confirm your appointment.

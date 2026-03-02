@@ -1,7 +1,4 @@
-/**
- * services offered by the repair shop, each service includes: id, name, price, duration, description, image, and what's included
- * we are missing step 3 to 5 still
- */
+/*services offered by the repair shop, each service includes: id, name, price, duration, description, image, and what's included*/
 const services = [
     {
         id: 'brake-tune',
@@ -43,7 +40,7 @@ const services = [
         id: 'replacements',
         name: 'Replacements',
         price: '100-200',
-        duration: 'depends on required parts',
+        duration: 'depends (1-7 days)',
         description: 'Part replacement and installation service',
         image: 'photoss/replacements.jpg',
         included: ['Old part removal', 'New part installation', 'Compatibility check', 'Functional testing']
@@ -126,16 +123,160 @@ let contactInfo = {
     notes:""
 };
 
+// payment info for step 5
+let paymentInfo = {
+  cardName: "",
+  cardLast4: "",
+  exp: "",
+  postal: ""
+};
+
 // global state is set to keep track of selected service, staff, and current step in the booking process
 let selectedService = null;
 let selectedStaff = null;
 let currentStep = 1;
+
+// tracking steps the user has already completed (Visibility + Mapping)
+const completedSteps = new Set();
+
+/**
+ * non-blocking toast notification instead of alert().
+ * @param {string} message - The message to display
+ * @param {'warning'|'error'|'success'|'info'} type - Visual style
+ * @param {number} duration - Auto-dismiss delay in ms (0 = stay)
+ */
+function showToast(message, type = 'warning', duration = 4500) {
+    const container = document.getElementById('toastContainer');
+    if (!container) { console.warn(message); return; }
+
+    const id = 'toast_' + Date.now() + Math.random();
+    const icons = { warning: '⚠️', error: '❌', success: '✅', info: 'ℹ️' };
+
+    const toast = document.createElement('div');
+    toast.id = id;
+    toast.className = `toast-notification toast-${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <span class="toast-icon" aria-hidden="true">${icons[type] || 'ℹ️'}</span>
+        <span class="toast-message">${message}</span>
+        <button class="toast-close" aria-label="Dismiss notification" onclick="document.getElementById('${id}').remove()">×</button>
+    `;
+    container.appendChild(toast);
+
+    if (duration > 0) {
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.classList.add('toast-fade-out');
+                setTimeout(() => toast.remove(), 320);
+            }
+        }, duration);
+    }
+}
+
+/**
+ * ARIA live region announcement
+ * @param {string} message
+ */
+function announceToScreenReader(message) {
+    const live = document.getElementById('ariaLive');
+    if (!live) return;
+    live.textContent = '';
+    requestAnimationFrame(() => { live.textContent = message; });
+}
+
+/**
+ * flashing the hint text below a disabled button.
+ * @param {string} hintId - id of the .btn-hint element
+ */
+function flashButtonHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (!hint) return;
+    hint.classList.remove('visible');
+    void hint.offsetWidth;
+    hint.classList.add('visible');
+    setTimeout(() => hint.classList.remove('visible'), 3500);
+}
+
+/**
+ * as feedback and constraint... bootstrap is-valid / is-invalid state to a field
+ * @param {HTMLElement} field - input element
+ * @param {boolean|null} valid - true=valid, false=invalid, null=neutral
+ * @param {string} message - error message shown when invalid
+ * @param {string} feedbackId - id of the .invalid-feedback element
+ */
+function setFieldValidity(field, valid, message, feedbackId) {
+    field.classList.remove('is-valid', 'is-invalid');
+    const fb = document.getElementById(feedbackId);
+    if (fb) fb.textContent = message || '';
+
+    if (valid === true) {
+        field.classList.add('is-valid');
+    } else if (valid === false) {
+        field.classList.add('is-invalid');
+        if (fb) fb.style.display = 'block';
+    }
+}
+
+function luhnCheck(numStr) {
+  // basic Luhn algorithm for card numbers (client-side sanity check)
+  let sum = 0;
+  let shouldDouble = false;
+
+  for (let i = numStr.length - 1; i >= 0; i--) {
+    let digit = parseInt(numStr[i], 10);
+    if (Number.isNaN(digit)) return false;
+
+    if (shouldDouble) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+    sum += digit;
+    shouldDouble = !shouldDouble;
+  }
+  return (sum % 10) === 0;
+}
+
+function normalizeDigits(s) {
+  return (s || "").replace(/\D/g, "");
+}
+
+function formatCardNumberForDisplay(raw) {
+  const digits = normalizeDigits(raw).slice(0, 16);
+  return digits.replace(/(.{4})/g, "$1 ").trim();
+}
+
+function isValidExpiry(mmYY) {
+  const v = (mmYY || "").trim();
+  if (!/^\d{2}\/\d{2}$/.test(v)) return false;
+
+  const mm = parseInt(v.slice(0, 2), 10);
+  const yy = parseInt(v.slice(3, 5), 10);
+  if (mm < 1 || mm > 12) return false;
+
+  // interpret YY as 20YY (good enough for an assignment demo)
+  const now = new Date();
+  const currentYY = now.getFullYear() % 100;
+  const currentMM = now.getMonth() + 1;
+
+  if (yy < currentYY) return false;
+  if (yy === currentYY && mm < currentMM) return false;
+
+  return true;
+}
+
+function isValidPostalCA(postal) {
+  // Canadian postal code: A1A1A1 (spaces optional)
+  const v = (postal || "").trim().toUpperCase().replace(/\s/g, "");
+  return /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(v);
+}
 
 /*initialize the application when DOM is ready*/
 document.addEventListener('DOMContentLoaded', function() {
     renderServices();
     initializeEventListeners();
     initializeTooltips();
+    const h1 = document.getElementById('hint-nextToStep2');
+    if (h1) h1.classList.add('visible');
 });
 
 /*rendering all the service cards*/
@@ -147,6 +288,128 @@ function renderServices() {
         const card = createServiceCard(service);
         container.appendChild(card);
     });
+}
+
+function hookPaymentValidation(){
+  const submitBtn = document.getElementById('submitBooking');
+  const progressEl = document.getElementById('paymentFormProgress');
+
+  const nameEl   = document.getElementById('cardName');
+  const numEl    = document.getElementById('cardNumber');
+  const expEl    = document.getElementById('cardExp');
+  const cvvEl    = document.getElementById('cardCvv');
+  const postalEl = document.getElementById('billingPostal');
+
+  if (!submitBtn || !nameEl || !numEl || !expEl || !cvvEl || !postalEl) return;
+
+  function validate(){
+    const nameVal = nameEl.value.trim();
+    const numDigits = normalizeDigits(numEl.value);
+    const expVal = expEl.value.trim();
+    const cvvDigits = normalizeDigits(cvvEl.value);
+    const postalVal = postalEl.value.trim();
+
+    const nameValid = nameVal.length >= 2;
+
+    // allow 13-19 digits generally, but we format to 16 visually
+    const numberLengthOk = numDigits.length >= 13 && numDigits.length <= 19;
+    const numberValid = numberLengthOk && luhnCheck(numDigits);
+
+    const expValid = isValidExpiry(expVal);
+
+    // CVV 3 or 4 digits
+    const cvvValid = /^\d{3,4}$/.test(cvvDigits);
+
+    const postalValid = isValidPostalCA(postalVal);
+
+    // per-field feedback
+    if (nameEl.value !== '') {
+      setFieldValidity(nameEl, nameValid, 'Name on card is required.', 'feedback-cardName');
+    } else {
+      nameEl.classList.remove('is-valid', 'is-invalid');
+    }
+
+    if (numEl.value !== '') {
+      setFieldValidity(numEl, numberValid, 'Enter a valid card number.', 'feedback-cardNumber');
+    } else {
+      numEl.classList.remove('is-valid', 'is-invalid');
+    }
+
+    if (expEl.value !== '') {
+      setFieldValidity(expEl, expValid, 'Use MM/YY and a future date.', 'feedback-cardExp');
+    } else {
+      expEl.classList.remove('is-valid', 'is-invalid');
+    }
+
+    if (cvvEl.value !== '') {
+      setFieldValidity(cvvEl, cvvValid, 'CVV must be 3 or 4 digits.', 'feedback-cardCvv');
+    } else {
+      cvvEl.classList.remove('is-valid', 'is-invalid');
+    }
+
+    if (postalEl.value !== '') {
+      setFieldValidity(postalEl, postalValid, 'Use Canadian format (e.g. K1A0B1).', 'feedback-billingPostal');
+    } else {
+      postalEl.classList.remove('is-valid', 'is-invalid');
+    }
+
+    const overallValid = nameValid && numberValid && expValid && cvvValid && postalValid;
+
+    // don’t allow submit until payment is valid
+    submitBtn.disabled = !overallValid;
+
+    if (progressEl) {
+      const missing = [];
+      if (!nameValid) missing.push('name');
+      if (!numberValid) missing.push('card number');
+      if (!expValid) missing.push('expiry');
+      if (!cvvValid) missing.push('CVV');
+      if (!postalValid) missing.push('postal code');
+
+      progressEl.innerHTML = (missing.length === 0)
+        ? '<span style="color:var(--success-green)">✓ Payment info looks valid (still demo-only).</span>'
+        : `Still needed: <strong>${missing.join(', ')}</strong>`;
+    }
+
+    if (overallValid) {
+      paymentInfo = {
+        cardName: nameVal,
+        cardLast4: numDigits.slice(-4),
+        exp: expVal,
+        postal: postalVal.trim().toUpperCase().replace(/\s/g, "")
+      };
+    }
+  }
+
+  // Formatting constraints
+  numEl.addEventListener('input', () => {
+    numEl.value = formatCardNumberForDisplay(numEl.value);
+    validate();
+  });
+
+  expEl.addEventListener('input', () => {
+    const digits = normalizeDigits(expEl.value).slice(0, 4); // MMYY
+    if (digits.length <= 2) expEl.value = digits;
+    else expEl.value = digits.slice(0,2) + '/' + digits.slice(2);
+    validate();
+  });
+
+  cvvEl.addEventListener('input', () => {
+    cvvEl.value = normalizeDigits(cvvEl.value).slice(0, 4);
+    validate();
+  });
+
+  postalEl.addEventListener('input', () => {
+    postalEl.value = postalEl.value.toUpperCase().replace(/[^A-Z0-9\s]/g, '').slice(0, 7);
+    validate();
+  });
+
+  [nameEl].forEach(el => {
+    el.addEventListener('input', validate);
+    el.addEventListener('change', validate);
+  });
+
+  validate();
 }
 
 /**
@@ -226,21 +489,28 @@ function createStaffCard(member) {
     
     // extracting initials from staff name
     const initials = member.name.split(' ').map(n => n[0]).join('');
+
+    // to determine if staff is a recommended match for the selected service
+    const isRecommended = selectedService && member.expertise.some(exp =>
+        selectedService.name.toLowerCase().includes(exp.toLowerCase()) ||
+        exp.toLowerCase().includes(selectedService.name.toLowerCase().split(' ')[0])
+    );
     
     col.innerHTML = `
-        <div class="card staff-card" 
+        <div class="card staff-card${isRecommended ? ' recommended-match' : ''}" 
              data-staff-id="${member.id}" 
              tabindex="0" 
              role="button"
-             aria-label="Select ${member.name}, ${member.role}">
-            <i class="bi bi-check-circle-fill card-check"></i>
+             aria-label="Select ${member.name}, ${member.role}${isRecommended ? ', recommended for your chosen service' : ''}">
+            <i class="bi bi-check-circle-fill card-check" aria-hidden="true"></i>
             <div class="card-body text-center">
+                ${isRecommended ? '<span class="recommended-badge">⭐ Recommended</span>' : ''}
                 <div class="staff-initials">${initials}</div>
                 <h5 class="card-title">${member.name}</h5>
                 <p class="text-muted mb-2">${member.role}</p>
                 
                 <div class="mb-2">
-                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning" aria-hidden="true"></i>
                     <small>${member.experience} experience</small>
                 </div>
                 
@@ -255,12 +525,13 @@ function createStaffCard(member) {
                     <i class="bi bi-info-circle" 
                        data-bs-toggle="tooltip" 
                        data-bs-placement="top" 
-                       title="${member.specialty}"></i>
+                       title="${member.specialty}"
+                       aria-hidden="true"></i>
                     ${member.specialty}
                 </p>
                 
                 <p class="small mb-0">
-                    <i class="bi bi-calendar-check"></i> Available: ${member.availability}
+                    <i class="bi bi-calendar-check" aria-hidden="true"></i> Available: ${member.availability}
                 </p>
             </div>
         </div>
@@ -293,40 +564,100 @@ function initializeEventListeners() {
 
     // step 4 validation
     hookContactValidation();
+    hookPaymentValidation();
 }
 
 function hookContactValidation(){
-    const form = document.getElementById('step4');
     const nextBtn = document.getElementById('nextToStep5'); 
 
     const first = document.getElementById('contactFirstName');
-    const last = document.getElementById('contactLastName');
+    const last  = document.getElementById('contactLastName');
     const email = document.getElementById('contactEmail');
     const phone = document.getElementById('contactPhone');
     const notes = document.getElementById('contactNotes');
+    const progressEl = document.getElementById('contactFormProgress');
+
+    // new constraint... strip non-digit characters from phone in real-time
+    if (phone) {
+        phone.addEventListener('input', () => {
+            const digits = phone.value.replace(/\D/g, '').slice(0, 10);
+            if (phone.value !== digits) phone.value = digits;
+        });
+    }
 
     function validate(){
-        const firstValid = first.value.trim().length > 0;
-        const lastValid = last.value.trim().length > 0;
-        const emailValid = (email.value.trim().length > 0) && email.checkValidity();
-        const phoneValid = phone.value.trim().length == 10;
+        const firstVal   = first ? first.value.trim() : '';
+        const lastVal    = last  ? last.value.trim()  : '';
+        const emailVal   = email ? email.value.trim() : '';
+        const phoneVal   = phone ? phone.value.trim() : '';
+
+        const firstValid = firstVal.length > 0;
+        const lastValid  = lastVal.length  > 0;
+        const emailValid = emailVal.length > 0 && (email ? email.checkValidity() : false);
+        const phoneValid = /^\d{10}$/.test(phoneVal);
+
+        // the per-field validation feedback
+        if (first && firstVal !== '') {
+            setFieldValidity(first, firstValid,
+                'First name is required.', 'feedback-firstName');
+        } else if (first) {
+            first.classList.remove('is-valid', 'is-invalid');
+        }
+
+        if (last && lastVal !== '') {
+            setFieldValidity(last, lastValid,
+                'Last name is required.', 'feedback-lastName');
+        } else if (last) {
+            last.classList.remove('is-valid', 'is-invalid');
+        }
+
+        if (email && emailVal !== '') {
+            setFieldValidity(email, emailValid,
+                'Please enter a valid email address.', 'feedback-email');
+        } else if (email) {
+            email.classList.remove('is-valid', 'is-invalid');
+        }
+
+        if (phone && phoneVal !== '') {
+            setFieldValidity(phone, phoneValid,
+                'Phone must be exactly 10 digits.', 'feedback-phone');
+        } else if (phone) {
+            phone.classList.remove('is-valid', 'is-invalid');
+        }
 
         const overallValid = firstValid && lastValid && (emailValid || phoneValid);
 
         nextBtn.disabled = !overallValid;
 
+        // live progress message so users know what remains
+        if (progressEl) {
+            const missing = [];
+            if (!firstValid)  missing.push('first name');
+            if (!lastValid)   missing.push('last name');
+            if (!emailValid && !phoneValid) missing.push('email or phone number');
+
+            if (missing.length === 0) {
+                progressEl.innerHTML = '<span style="color:var(--success-green)">✓ All required fields are filled in.</span>';
+            } else {
+                progressEl.innerHTML = `Still needed: <strong>${missing.join(', ')}</strong>`;
+            }
+        }
+
         if (overallValid) {
             contactInfo = {
-                firstName: first.value.trim(),
-                lastName: last.value.trim(),
-                email: email.value.trim(),
-                phone: phone.value.trim(),
-                notes: notes ? notes.value.trim() : ""
+                firstName: firstVal,
+                lastName:  lastVal,
+                email:     emailVal,
+                phone:     phoneVal,
+                notes:     notes ? notes.value.trim() : ""
             };
+            // we want to hide the persistent hint once form is valid
+            const hint = document.getElementById('hint-nextToStep5');
+            if (hint) hint.classList.remove('visible');
         }
     }
 
-    // validate live
+    // another feedback feature we will add... validate live on every keystroke
     [first, last, email, phone, notes].forEach(el => {
         if (!el) return;
         el.addEventListener('input', validate);
@@ -357,21 +688,53 @@ function populateFinalSummary(){
 }
 
 function submitBooking() {
+    // stop if payment is not valid (defensive)
+    const submitBtn = document.getElementById('submitBooking');
+    if (submitBtn && submitBtn.disabled) {
+    showToast('Please complete valid payment details before submitting (demo only).', 'warning');
+    announceToScreenReader('Payment details are incomplete.');
+    return;
+    }
+    const btn = document.getElementById('submitBooking');
     const box = document.getElementById('submitResult');
     if (!box) return;
 
-    box.style.display = 'block';
-    box.className = 'alert alert-success';
+    // more feedbac... we want to show loading state so user knows something is happening
+    if (btn) {
+        btn.classList.add('submitting');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Confirming…';
+        btn.disabled = true;
+    }
 
-    const when = bookingDate && bookingTime ? `${ymd(bookingDate)} at ${bookingTime}` : "your selected time";
+    setTimeout(() => {
+        completedSteps.add(5);
 
-    box.innerHTML = `
-        <strong>Booking confirmed.</strong><br>
-        Appointment: ${when}<br>
-        Service: ${selectedService ? selectedService.name : ""}<br>
-        Technician: ${selectedStaff ? selectedStaff.name : ""}<br>
-        Contact: ${contactInfo.email || contactInfo.phone}
-    `;
+        box.style.display = 'block';
+        box.className = 'alert alert-success';
+
+        const when = bookingDate && bookingTime
+            ? `${ymd(bookingDate)} at ${bookingTime}`
+            : 'your selected time';
+
+        box.innerHTML = `
+            <strong>Booking confirmed.</strong><br>
+            Appointment: ${when}<br>
+            Service: ${selectedService ? selectedService.name : ''}<br>
+            Technician: ${selectedStaff ? selectedStaff.name : ''}<br>
+            Contact: ${contactInfo.email || contactInfo.phone}
+        `;
+
+        // hiding submit buttons, show only the confirmation
+        if (btn) btn.style.display = 'none';
+        const backBtn = document.getElementById('backToStep4');
+        if (backBtn) backBtn.style.display = 'none';
+
+        announceToScreenReader('Booking confirmed! Your appointment has been successfully submitted.');
+
+        showToast('Your appointment has been booked successfully!', 'success', 6000);
+
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 900);
 }
 
 /**
@@ -433,20 +796,27 @@ function selectService(serviceId) {
     
     //and updating the UI to reflect the selection
     document.querySelectorAll('.service-card').forEach(card => {
-        card.classList.remove('selected');
+        card.classList.remove('selected', 'just-selected');
     });
     
     const selectedCard = document.querySelector(`[data-service-id="${serviceId}"]`);
     selectedCard.classList.add('selected');
+    // pulse animation on selection
+    selectedCard.classList.add('just-selected');
+    selectedCard.addEventListener('animationend', () => selectedCard.classList.remove('just-selected'), { once: true });
     
     //selection summary for the user to see what they selected
     document.getElementById('serviceSelectionSummary').style.display = 'block';
     document.getElementById('selectedServiceText').innerHTML = `
-        <strong>${service.name}</strong> - $${service.price} (${service.duration})
+        <strong>${service.name}</strong> — $${service.price} (${service.duration})
     `;
     
+    const hint = document.getElementById('hint-nextToStep2');
+    if (hint) hint.classList.remove('visible');
+
     //we only enable the next button after a service is selected to guide the user through the process
     document.getElementById('nextToStep2').disabled = false;
+    announceToScreenReader(`${service.name} selected. You can now continue to select a technician.`);
 }
 
 /**
@@ -462,11 +832,13 @@ function selectStaff(staffId) {
     
     //and update the UI to show which staff member is selected
     document.querySelectorAll('.staff-card').forEach(card => {
-        card.classList.remove('selected');
+        card.classList.remove('selected', 'just-selected');
     });
     
     const selectedCard = document.querySelector(`[data-staff-id="${staffId}"]`);
     selectedCard.classList.add('selected');
+    selectedCard.classList.add('just-selected');
+    selectedCard.addEventListener('animationend', () => selectedCard.classList.remove('just-selected'), { once: true });
     
     //selection summary once again
     document.getElementById('staffSelectionSummary').style.display = 'block';
@@ -474,9 +846,13 @@ function selectStaff(staffId) {
     document.getElementById('summaryStaff').textContent = `${staffMember.name} (${staffMember.role})`;
     document.getElementById('summaryPrice').textContent = `$${selectedService.price}`;
     document.getElementById('summaryDuration').textContent = selectedService.duration;
+
+    const hint = document.getElementById('hint-nextToStep3');
+    if (hint) hint.classList.remove('visible');
     
     //enabling next button for step 3 only after a staff member is selected
     document.getElementById('nextToStep3').disabled = false;
+    announceToScreenReader(`${staffMember.name} selected. You can now continue to scheduling.`);
 }
 
 /*navigate to Step 1*/
@@ -489,44 +865,52 @@ function goToStep1() {
 /*navigate to Step 2*/
 function goToStep2() {
     if (!selectedService && currentStep === 1) {
-        alert('Please select a service first.');
+        // we need the inline toast instead of blocking alert()
+        showToast('Please select a service before continuing.', 'warning');
+        flashButtonHint('hint-nextToStep2');
+        announceToScreenReader('Please select a service to continue.');
         return;
     }
     
+    if (currentStep === 1) completedSteps.add(1);
     currentStep = 2;
     renderStaff();
     updateStepDisplay();
     updateProgressBar();
+    initializeTooltips(); //using the tooltips
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // show persistent hint on step 2 next button if not yet selected
+    if (!selectedStaff) {
+        const h = document.getElementById('hint-nextToStep3');
+        if (h) h.classList.add('visible');
+    }
 }
 
-/*navigate to Step 3... HERE WE ARE MISSING DEVELOPMENT FOR STEP 3 TO 5*/
 function goToStep3() {
     if (!selectedStaff) {
-        alert('Please select a technician first.');
+        showToast('Please select a technician before continuing.', 'warning');
+        flashButtonHint('hint-nextToStep3');
+        announceToScreenReader('Please select a technician to continue.');
         return;
     }
     
+    if (currentStep === 2) completedSteps.add(2);
     currentStep = 3;
     updateStepDisplay();
     updateProgressBar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     initStep3Calendar();
-    
-    /**
-     * CONTINUE THE WORK TEAM:
-     * At this point, you have access to:
-     * - selectedService (object with all service details)
-     * - selectedStaff (object with all staff details)
-     */
 }
 
 function goToStep4() {
     if (!bookingDate || !bookingTime) {
-        alert('Please choose a date and time first.');
+        showToast('Please choose both a date and a time before continuing.', 'warning');
+        flashButtonHint('hint-nextToStep4');
+        announceToScreenReader('Please choose a date and time to continue.');
         return;
     }
 
+    if (currentStep === 3) completedSteps.add(3);
     currentStep = 4;
     updateStepDisplay();
     updateProgressBar();
@@ -536,10 +920,13 @@ function goToStep4() {
 function goToStep5() {
     const nextBtn = document.getElementById('nextToStep5');
     if (nextBtn && nextBtn.disabled) {
-        alert('Please enter your contact info (full name + email or phone).');
+        showToast('Please enter your full name and at least one contact method (email or phone).', 'warning');
+        flashButtonHint('hint-nextToStep5');
+        announceToScreenReader('Please complete your contact information to continue.');
         return;
     }
 
+    if (currentStep === 4) completedSteps.add(4);
     currentStep = 5;
     updateStepDisplay();
     updateProgressBar();
@@ -555,12 +942,39 @@ function updateStepDisplay() {
     document.getElementById('step4').style.display = currentStep === 4 ? 'block' : 'none';
     document.getElementById('step5').style.display = currentStep === 5 ? 'block' : 'none';
     
-    // Update step labels
-    document.getElementById('step1Label').className = currentStep === 1 ? 'step-active' : '';
-    document.getElementById('step2Label').className = currentStep === 2 ? 'step-active' : '';
-    document.getElementById('step3Label').className = currentStep === 3 ? 'step-active' : '';
-    document.getElementById('step4Label').className = currentStep === 4 ? 'step-active' : '';
-    document.getElementById('step5Label').className = currentStep === 5 ? 'step-active' : '';
+    // we need to make sure step labels show if active, completed, and upcoming states. And allow clicking back to completed steps
+    const stepGoFns = [null, goToStep1, goToStep2, goToStep3, goToStep4, goToStep5];
+    for (let i = 1; i <= 5; i++) {
+        const label = document.getElementById(`step${i}Label`);
+        if (!label) continue;
+
+        // remove all state classes
+        label.className = '';
+        // remove any previously-bound click handler via cloneNode trick
+        const fresh = label.cloneNode(true);
+        label.parentNode.replaceChild(fresh, label);
+        const newLabel = document.getElementById(`step${i}Label`);
+
+        if (i === currentStep) {
+            newLabel.classList.add('step-active');
+            newLabel.removeAttribute('role');
+            newLabel.removeAttribute('tabindex');
+        } else if (completedSteps.has(i)) {
+            newLabel.classList.add('step-completed', 'step-clickable');
+            newLabel.setAttribute('role', 'button');
+            newLabel.setAttribute('tabindex', '0');
+            newLabel.setAttribute('title', `Go back to step ${i}`);
+            newLabel.addEventListener('click', stepGoFns[i]);
+            newLabel.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); stepGoFns[i](); }
+            });
+        } else {
+            // unreached steps are greyed out
+            newLabel.classList.add('step-upcoming');
+            newLabel.removeAttribute('role');
+            newLabel.removeAttribute('tabindex');
+        }
+    }
 }
 
 /*Update progress bar based on current step*/
@@ -705,6 +1119,12 @@ function initStep3Calendar() {
     const year = view.getFullYear();
     const month = view.getMonth();
 
+    // as another constraint feature... disable "prev" button if already showing the current month
+    const todayForNav = new Date();
+    const isCurrentMonth = (year === todayForNav.getFullYear() && month === todayForNav.getMonth());
+    calPrev.disabled = isCurrentMonth;
+    calPrev.setAttribute('aria-disabled', isCurrentMonth ? 'true' : 'false');
+
     const firstDow = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
@@ -784,6 +1204,13 @@ function initStep3Calendar() {
     // Date + time chosen
     scheduleSummary.textContent = `Date: ${ymd(bookingDate)} — Time: ${bookingTime}`;
     nextToStep4.disabled = false;
+
+    // hide the persistent hint once date+time are chosen
+    const hint4 = document.getElementById('hint-nextToStep4');
+    if (hint4) hint4.classList.remove('visible');
+
+    // announce readiness to screen readers
+    announceToScreenReader(`Date ${ymd(bookingDate)} at ${bookingTime} selected. You can now continue to contact information.`);
 
     if (step3BookingSummary) step3BookingSummary.style.display = "block";
 
