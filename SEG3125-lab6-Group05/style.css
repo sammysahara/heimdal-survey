@@ -1,0 +1,271 @@
+/*let's make the style of our page lunar themed*/
+:root {
+  --moon-bg: rgb(15, 23, 42);
+  --moon-surface: #1e293b;
+  --moon-light: #64748b;
+  --moon-glow: #94a3b8;
+  --moon-text: #e2e8f0;
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --accent: #3b82f6;
+  --hover: #60a5fa;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: var(--moon-bg);
+  color: var(--moon-text);
+  line-height: 1.6;
+
+  /* optional addition: pretty background */
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)),
+    url(images/background.jpg);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+h1 {
+  text-align: center;
+  color: var(--moon-text);
+  margin-bottom: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* footer for signature at bottom of the page*/
+footer {
+  width: 100%;
+  background-color: #070e1d;
+  color: #64748b;
+  text-align: right;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+.question-number{
+  display : inline-block;
+  margin-bottom: 10px;
+  padding: 4px 10px;
+  border-radius: 8px;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  background: rgba(22, 67, 139, 0.2);
+  color: var(--hover);
+  border: 1px solid rgba(47, 92, 164, 0.35)
+}
+
+/* added wrapper for survey content */
+.survey {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.website-link {
+  display: block;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 18px;
+  color: var(--moon-glow);
+  text-decoration: none;
+  transition:
+    color 0.3s ease,
+    transform 0.2s ease;
+  font-weight: 500;
+}
+
+.website-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  transform: translateY(-1px);
+}
+
+.ourimage-link {
+  display: block;
+  text-align: center;
+  margin: 20px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ourimage-link img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  padding: 8px;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.ourimage-link img:hover {
+  transform: scale(1.02);
+}
+
+.question {
+  margin: 25px 0;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border);
+  transition: box-shadow 0.3s ease;
+}
+
+.question:hover {
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--moon-text);
+}
+
+input[type='text'],
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 4px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-sizing: border-box;
+  background-color: var(--moon-surface);
+  color: var(--moon-text);
+  font-family: inherit;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+input[type='text']:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.radio-group label,
+.checkbox-group label {
+  font-weight: normal;
+  margin-left: 24px;
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.radio-group label:hover,
+.checkbox-group label:hover {
+  color: var(--accent);
+}
+
+.radio-group input[type='radio'],
+.checkbox-group input[type='checkbox'] {
+  margin-right: 8px;
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* trying something new to see if the radio buttons and checkboxes can glow*/
+.radio-group input[type='radio']:checked ~ span,
+.checkbox-group input[type='checkbox']:checked ~ span {
+  color: var(--accent);
+}
+
+/* submit button centered and styled*/
+.submit-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: var(--hover);
+  transform: translateY(-1px);
+}
+
+/* 2x2 grid - question 5 */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+
+/* Tile */
+.icon-tile {
+  background: var(--moon-surface);
+  border: 1.5px solid var(--card-border);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.15s ease, border 0.15s ease, box-shadow 0.15s ease;
+}
+
+.icon-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+/* Hide checkbox but keep it functional */
+.icon-tile input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Icon image(white filter) */
+.icon-tile img {
+  width: 100%;
+  height: 110px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 8px;
+  filter: brightness(0) invert(1);
+}
+
+/* Selected state: highlight image + glow */
+.icon-tile input:checked + img {
+  outline: 3px solid var(--moon-surface);
+  outline-offset: 3px;
+  border-radius: 12px;
+  filter: brightness(0) invert(1) sepia(0.4) saturate(100%) hue-rotate(85deg) drop-shadow(0 0 10px rgba(30, 64, 175, 0.9));
+}
+
+/* Selected state: accent text */
+.icon-tile input:checked ~ .tile-label {
+  color: var(--accent);
+}
+
+.lunar-icon {
+  filter: brightness(0.8) saturate(0.5) hue-rotate(200deg);
+}

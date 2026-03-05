@@ -1,0 +1,275 @@
+<!-- first we need the basic set up structure with UTF-8 -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Survey over Heimdal Cybersecurity Solutions</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <!-- now we will start doing the questions for the survey-->
+  <body>
+    <div class="survey">
+      <h1>Survey on Heimdal Cybersecurity Solutions</h1>
+      <!-- the user can go to the link and review the UI before answering the survey-->
+      <a
+        href="https://heimdalsecurity.com/enterprise-security/cybersecurity-solutions?partner=capterra-msp&utm_campaign=MSP&utm_source=GetApp&gdmcid=a7c69c8d-d4fd-449a-ba16-c7d8279adbbb"
+        class="website-link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Visit Heimdal Security Website clicking here or double click on the
+        image below
+      </a>
+
+      <!-- here we will put the image as a link to the website, it is not a logo, but we can use-->
+      <a
+        href="https://heimdalsecurity.com/enterprise-security/cybersecurity-solutions?partner=capterra-msp&utm_campaign=MSP&utm_source=GetApp&gdmcid=a7c69c8d-d4fd-449a-ba16-c7d8279adbbb"
+        class="ourimage-link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="images/heimdalscreenshot1.png.png"
+          alt="Heimdal Cybersecurity Solutions home page"
+        />
+      </a>
+
+      <!-- I tried to implement this in the css file but it didn't work properly, however, it works when attached to the html directly-->
+      <style>
+        .zoom-container {
+          position: relative;
+          overflow: hidden;
+          cursor: zoom-in;
+        }
+
+        .zoom-container img {
+          transition: transform 0.3s ease;
+          transform-origin: center center;
+        }
+
+        .zoom-container:hover img {
+          transform: scale(2);
+        }
+
+        .zoom-container.zoomed {
+          cursor: zoom-out;
+        }
+
+        .zoom-container.zoomed img {
+          transform: scale(1);
+        }
+      </style>
+
+      <!-- this could be in a js file but for now we can just leave it here, we will also allow the user to double click the image to be sent to the website-->
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const imageLink = document.querySelector('.ourimage-link')
+          const linkUrl = imageLink.href
+
+          imageLink.addEventListener('click', function (e) {
+            e.preventDefault()
+          })
+
+          imageLink.addEventListener('dblclick', function (e) {
+            window.open(linkUrl, '_blank', 'noopener,noreferrer')
+          })
+        })
+      </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const imageLink = document.querySelector('.ourimage-link')
+          const container = document.createElement('div')
+          container.className = 'zoom-container'
+
+          imageLink.parentNode.insertBefore(container, imageLink)
+          container.appendChild(imageLink)
+
+          const img = imageLink.querySelector('img')
+
+          container.addEventListener('mousemove', function (e) {
+            const rect = container.getBoundingClientRect()
+            const x = ((e.clientX - rect.left) / rect.width) * 100
+            const y = ((e.clientY - rect.top) / rect.height) * 100
+            img.style.transformOrigin = `${x}% ${y}%`
+          })
+
+          imageLink.addEventListener('click', function (e) {
+            e.preventDefault()
+            container.classList.toggle('zoomed')
+          })
+        })
+      </script>
+
+      <!-- now let's put a text question-->
+      <div class="question">
+        <div class="question-number"> Question 1 of 6 </div>
+        <label for="predictability"
+          >Do buttons, menus, and flows work predictably?</label
+        >
+        <input
+          type="text"
+          id="predictability"
+          name="predictability"
+          placeholder="Your response..."
+        />
+      </div>
+
+      <!-- here is the radio buttons question, it's a single choice question-->
+      <div class="question">
+        <div class="question-number"> Question 2 of 6 </div>
+        <label>How would you rate the readability of the website?</label>
+        <div class="radio-group">
+          <label
+            ><input type="radio" name="readability" value="excellent" />
+            Excellent</label
+          >
+          <label
+            ><input type="radio" name="readability" value="good" /> Good</label
+          >
+          <label
+            ><input type="radio" name="readability" value="fair" /> Fair</label
+          >
+          <label
+            ><input type="radio" name="readability" value="poor" /> Poor</label
+          >
+        </div>
+      </div>
+
+      <!-- here is the dropdown list question, it's a single choice question-->
+      <div class="question">
+        <div class="question-number"> Question 3 of 6 </div>
+        <label for="aesthetics"
+          >How would you rate the aesthetics of the website?</label
+        >
+        <select id="aesthetics" name="aesthetics">
+          <option value="">-- Please select --</option>
+          <option value="excellent">Excellent</option>
+          <option value="good">Good</option>
+          <option value="fair">Fair</option>
+          <option value="poor">Poor</option>
+        </select>
+      </div>
+
+      <!-- this one will be the selection question that has many boxes for the user to check-->
+      <div class="question">
+        <div class="question-number"> Question 4 of 6 </div>
+        <label
+          >Which aspects of the wesite's user interface caught most of your
+          attention? (You may select more than one option)</label
+        >
+        <div class="checkbox-group">
+          <label
+            ><input
+              type="checkbox"
+              name="ui-aspects"
+              value="The navigation bar"
+            />
+            Clear navigation
+          </label>
+          <label
+            ><input
+              type="checkbox"
+              name="ui-aspects"
+              value="The overall layout"
+            />
+            Clean overall layout</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              name="ui-aspects"
+              value="The color scheme"
+            />
+            Appealing color scheme</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              name="ui-aspects"
+              value="How responsive it is to user interactions"
+            />
+            Response time</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              name="ui-aspects"
+              value="The loading speed"
+            />
+            Loading speed</label
+          >
+        </div>
+      </div>
+      
+        <div class="question">
+  <div class="question-number"> Question 5 of 6 </div>
+
+  <label class="image-question-title">
+    Based on the homepage, what seems to be Heimdal's main promise to customers?
+    <span class="hint-text">(Select one or more icons)</span>
+  </label>
+
+  <div class="icon-grid">
+
+    <!-- Option A -->
+    <label class="icon-tile">
+      <input type="checkbox" name="heimdal_promise[]" value="consolidation">
+      <img src="images/consolidation-empty.png" alt="Consolidation icon">
+    </label>
+    
+    <!-- Option B -->
+    <label class="icon-tile">
+      <input type="checkbox" name="heimdal_promise[]" value="compliance">
+      <img src="images/compliance-empty.png" alt="Compliance icon">
+    </label>
+  
+    <!-- Option C -->
+    <label class="icon-tile">
+      <input type="checkbox" name="heimdal_promise[]" value="protection">
+      <img src="images/protection-empty.png" alt="Protection icon">
+    </label>    
+    
+    <!-- Option D -->
+    <label class="icon-tile">
+      <input type="checkbox" name="heimdal_promise[]" value="efficiency">
+      <img src="images/efficiency-empty.png" alt="Efficiency icon">
+      </label>
+  </div>
+</div>
+      
+      <div class="question">
+        <div class="question-number"> Question 6 of 6 </div>
+        <label for="comments"
+          >Any additional comments or suggestions that you want to share?</label
+        >
+        <textarea
+          id="comments"
+          name="comments"
+          rows="5"
+          placeholder="Share your opinions about the UI of Heimdal Cybersecurity Solutions"
+          style="
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            background-color: #f8fafc;
+            color: #2d3748;
+          "
+        ></textarea>
+      </div>
+
+      <div class="question">
+        <button type="button" class="submit-btn">Submit My Answers</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        Website designed by Salma Ahmed, Steven Feng Peng, and Sahara Sammy ☆
+      </p>
+    </footer>
+  </body>
+</html>
