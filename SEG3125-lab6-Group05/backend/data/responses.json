@@ -1,0 +1,32 @@
+[
+  {
+    "id": "766bd524-2565-4f78-afae-4e167c2af762",
+    "timestamp": "2026-03-06T16:28:58.646Z",
+    "predictability": "yes",
+    "readability": "good",
+    "aesthetics": "excellent",
+    "uiAspects": [
+      "How responsive it is to user interactions"
+    ],
+    "heimdalPromise": [
+      "protection"
+    ],
+    "comments": "nothing to add"
+  },
+  {
+    "id": "3adab344-87e4-44bb-b5b3-1f9b384e7edb",
+    "timestamp": "2026-03-06T16:30:13.346Z",
+    "predictability": "kinda, there are some things that do not work as expected",
+    "readability": "excellent",
+    "aesthetics": "fair",
+    "uiAspects": [
+      "The navigation bar",
+      "The overall layout"
+    ],
+    "heimdalPromise": [
+      "protection",
+      "efficiency"
+    ],
+    "comments": "the site looks good, but the reviews and trust are not the desired ones"
+  }
+]
