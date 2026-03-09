@@ -453,10 +453,14 @@ textarea:focus-visible {
 
 .pie-chart-visual {
   width: 180px;
-  height: 180px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
-  border: 8px solid rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  background-clip: padding-box;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 8px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .pie-chart-empty {

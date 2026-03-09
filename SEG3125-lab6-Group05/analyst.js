@@ -311,6 +311,11 @@ function renderPieChart(container, data, totalResponses) {
   container.innerHTML = '';
   const entries = Object.entries(data);
 
+  const totalSelections = entries.reduce(
+    (sum, [, count]) => sum + count,
+    0
+  );
+  
   if (entries.length === 0 || totalResponses === 0) {
     container.innerHTML = '<p class="pie-chart-empty">No data yet.</p>';
     return;
@@ -329,7 +334,7 @@ function renderPieChart(container, data, totalResponses) {
 
   let currentDeg = 0;
   const segments = entries.map(([label, count], index) => {
-    const sliceDeg = (count / totalResponses) * 360;
+    const sliceDeg = (count / totalSelections) * 360;
     const start = currentDeg;
     const end = currentDeg + sliceDeg;
     currentDeg = end;
