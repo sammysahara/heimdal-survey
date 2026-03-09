@@ -1,422 +1,234 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cycler Forever - where you go to keep the wheels spinning</title>
-    
-    <!-- link to Bootstrap5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- link to Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
-    <!-- customization using CSS -->
-    <link rel="stylesheet" href="styles.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Survey over Heimdal Cybersecurity Solutions</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
-    <!-- header part-->
-    <header class="bg-dark text-white py-3">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-3">
-                    <img src="photoss/logo.jpg" alt="Cycler Forever Logo" class="img-fluid" style="max-height: 80px;">
-                </div>
-                <div class="col-md-6">
-                    <h1 class="h3 mb-0">Cycler Forever</h1>
-                    <p class="mb-0 small">Bicycle Repair & Maintenance</p>
-                </div>
-                <div class="col-md-3 text-md-end">
-                    <p class="mb-0"><i class="bi bi-geo-alt-fill"></i> 123 Bike Lane, Ottawa, ON</p>
-                    <p class="mb-0"><i class="bi bi-clock-fill"></i> Mon-Sat: 9AM-6PM</p>
-                    <p class="mb-0"><i class="bi bi-telephone-fill"></i> (613) 555-BIKE</p>
-                </div>
-            </div>
-        </div>
-    </header>
+  <body>
 
-    <!-- adding the toast notification container -->
-    <div id="toastContainer" aria-live="assertive" aria-atomic="false" role="status"></div>
-    
-    <!-- using ARIA live region for screen reader announcements -->
-    <div id="ariaLive" aria-live="polite" aria-atomic="true" class="visually-hidden"></div>
+    <!-- TO DO [UI] Nav bar: adjust colours, font size, or layout in style.css → .top-nav section -->
+    <!-- TO DO [A11Y] Nav: the active link already has aria-current via .nav-link--active; confirm screen-reader text is clear -->
+    <nav class="top-nav" aria-label="Page navigation">
+      <span class="nav-title">SEG3125 Lab 6 – Group 05</span>
+      <div class="nav-links">
+        <a href="index.html"   class="nav-link nav-link--active" aria-current="page">Survey Form</a>
+        <a href="analyst.html" class="nav-link">Analyst View</a>
+      </div>
+    </nav>
 
-    <!-- content part -->
-    <main class="container my-5">
-        <!-- we're using a div for the progress bar of course-->
-        <div class="row mb-4">
-            <div class="col">
-                <div class="progress" style="height: 30px;">
-                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
-                         role="progressbar" 
-                         style="width: 20%;" 
-                         aria-valuenow="20" 
-                         aria-valuemin="0" 
-                         aria-valuemax="100">
-                        Step 1: Select the service you need
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between mt-2 small text-muted">
-                    <span id="step1Label" class="fw-bold text-primary">1. Choose Service</span>
-                    <span id="step2Label">2. Select Staff</span>
-                    <!-- HERE IS WHERE YOU GUYS CAN WORK ON STEP 3 TO 5...-->
-                    <span id="step3Label">3. Schedule & Details</span>
-                    <span id="step4Label">4. Contact Information</span>
-                    <span id="step5Label">5. Submit</span>
-                </div>
-            </div>
+    <div id="step-indicator">Step 1 of 4</div>
+
+    <!-- novalidate: validation is handled in scripts.js before the fetch() call -->
+    <form id="survey-form" novalidate>
+    <div class="survey">
+      <h1>Survey on Heimdal Cybersecurity Solutions</h1>
+      <a
+        href="https://heimdalsecurity.com/enterprise-security/cybersecurity-solutions?partner=capterra-msp&utm_campaign=MSP&utm_source=GetApp&gdmcid=a7c69c8d-d4fd-449a-ba16-c7d8279adbbb"
+        class="website-link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Visit Heimdal Security Website clicking here or double click on the
+        image below
+      </a>
+
+      <!-- Single-click zooms; double-click opens the website in a new tab-->
+      <a
+        href="https://heimdalsecurity.com/enterprise-security/cybersecurity-solutions?partner=capterra-msp&utm_campaign=MSP&utm_source=GetApp&gdmcid=a7c69c8d-d4fd-449a-ba16-c7d8279adbbb"
+        class="ourimage-link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="images/heimdalscreenshot1.png.png"
+          alt="Heimdal Cybersecurity Solutions home page"
+        />
+      </a>
+
+      <!-- TO DO [UI] Q1: style the text input in style.css → .question input[type="text"] -->
+      <!-- TO DO [A11Y] Q1: add aria-required="true" to the <input> below -->
+      <div class="form-step" data-step="1">
+        <div class="question">
+          <div class="question-number"> Question 1 of 6 </div>
+          <label for="predictability"
+            >Do buttons, menus, and flows work predictably?</label
+          >
+          <input
+            type="text"
+            id="predictability"
+            name="predictability"
+            placeholder="Your response..."
+          />
         </div>
 
-        <!-- service selection part -->
-        <div id="step1" class="step-section">
-            <h2 class="mb-4">
-                <i class="bi bi-bicycle"></i> Step 1: Choose Your Service
-            </h2>
-            <p class="lead mb-4">Select the repair or maintenance service you need. Each service includes a free diagnostic check.</p>
-            
-            <div class="row g-4" id="serviceCards">
-                <!-- each card will represent one service, functionality made with JavaScript-->
-            </div>
+        <!-- TO DO [UI] Q2: style the radio group in style.css → .radio-group -->
+        <!-- TO DO [A11Y] Q2: wrap the radio group in a <fieldset><legend> for screen readers -->
+        <div class="question">
+          <div class="question-number"> Question 2 of 6 </div>
+          <label>How would you rate the readability of the website?</label>
+          <div class="radio-group">
+            <label
+              ><input type="radio" name="readability" value="excellent" />
+              Excellent</label
+            >
+            <label
+              ><input type="radio" name="readability" value="good" /> Good</label
+            >
+            <label
+              ><input type="radio" name="readability" value="fair" /> Fair</label
+            >
+            <label
+              ><input type="radio" name="readability" value="poor" /> Poor</label
+            >
+          </div>
+        </div>
+      </div>
 
-            <div class="mt-4 p-3 bg-light rounded" id="serviceSelectionSummary" style="display: none;">
-                <h5><i class="bi bi-check-circle-fill text-success"></i> You selected:</h5>
-                <p class="mb-0" id="selectedServiceText"></p>
-            </div>
-
-            <div class="mt-4">
-                <button id="nextToStep2" class="btn btn-primary btn-lg" disabled>
-                    Next: Select Staff <i class="bi bi-arrow-right"></i>
-                </button>
-                <div class="btn-hint" id="hint-nextToStep2">Please select a service above to continue.</div>
-            </div>
+      <!-- TO DO [UI] Q3: style the dropdown in style.css → .question select -->
+      <!-- TO DO [A11Y] Q3: add aria-required="true" to the <select> below -->
+      <div class="form-step" data-step="2" hidden>
+        <div class="question">
+          <div class="question-number"> Question 3 of 6 </div>
+          <label for="aesthetics"
+            >How would you rate the aesthetics of the website?</label
+          >
+          <select id="aesthetics" name="aesthetics">
+            <option value="">-- Please select --</option>
+            <option value="excellent">Excellent</option>
+            <option value="good">Good</option>
+            <option value="fair">Fair</option>
+            <option value="poor">Poor</option>
+          </select>
         </div>
 
-        <!-- next up is selecting the staff for the service -->
-        <div id="step2" class="step-section" style="display: none;">
-            <h2 class="mb-4">
-                <i class="bi bi-people-fill"></i> Step 2: Choose Your Technician
-            </h2>
-            <p class="lead mb-4">Select one of our certified technicians based on their expertise and availability.</p>
-            
-            <div class="row g-4" id="staffCards">
-                <!-- each staff memeber will also have a card -->
-            </div>
-
-            <div class="mt-4 p-3 bg-light rounded" id="staffSelectionSummary" style="display: none;">
-                <h5><i class="bi bi-check-circle-fill text-success"></i> Your booking summary:</h5>
-                <ul class="mb-0">
-                    <li><strong>Service:</strong> <span id="summaryService"></span></li>
-                    <li><strong>Technician:</strong> <span id="summaryStaff"></span></li>
-                    <li><strong>Price:</strong> <span id="summaryPrice"></span></li>
-                    <li><strong>Duration:</strong> <span id="summaryDuration"></span></li>
-                </ul>
-            </div>
-
-            <div class="mt-4 d-flex gap-2">
-                <button id="backToStep1" class="btn btn-secondary btn-lg">
-                    <i class="bi bi-arrow-left"></i> Back to Services
-                </button>
-                <button id="nextToStep3" class="btn btn-primary btn-lg" disabled>
-                    Continue to Scheduling <i class="bi bi-arrow-right"></i>
-                </button>
-                <div class="btn-hint" id="hint-nextToStep3">Please select a technician above to continue.</div>
-            </div>
+        <!-- TO DO [UI] Q4: style the checkbox group in style.css → .checkbox-group -->
+        <!-- TO DO [A11Y] Q4: wrap the checkboxes in a <fieldset><legend> for screen readers -->
+        <div class="question">
+          <div class="question-number"> Question 4 of 6 </div>
+          <label
+            >Which aspects of the wesite's user interface caught most of your
+            attention? (You may select more than one option)</label
+          >
+          <div class="checkbox-group">
+            <label
+              ><input
+                type="checkbox"
+                name="ui-aspects"
+                value="The navigation bar"
+              />
+              Clear navigation
+            </label>
+            <label
+              ><input
+                type="checkbox"
+                name="ui-aspects"
+                value="The overall layout"
+              />
+              Clean overall layout</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="ui-aspects"
+                value="The color scheme"
+              />
+              Appealing color scheme</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="ui-aspects"
+                value="How responsive it is to user interactions"
+              />
+              Response time</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="ui-aspects"
+                value="The loading speed"
+              />
+              Loading speed</label
+            >
+          </div>
         </div>
+      </div>
+      
+        <!-- TO DO [UI] Q5: style the icon tiles in style.css → .icon-grid / .icon-tile -->
+        <!-- DONE [A11Y] Q5: wrap in <fieldset><legend> and ensure each img alt is descriptive -->
+      <div class="form-step" data-step="3" hidden>
+        <div class="question">
+          <div class="question-number"> Question 5 of 6 </div>
 
-        <!-- next up is selecting the time/date -->
-        <div id="step3" class="step-section" style="display: none;">
-            <h2 class="mb-4">
-                <i class="bi bi-calendar-check"></i> Step 3: Choose Date & Time
-            </h2>
-            <div class="row g-4">
-                <div class="col-12 col-lg-7">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">Pick a date</h5>
-                            
-                            <!-- Calendar UI -->
-                             <div class="dropdown-menu d-block position-static p-2 mx-auto shadow rounded-3 w-340px">
-                                <div class="d-grid gap-1">
-                                    <div class="cal">
-                                        <div class="cal-month align-items-center">
-                                            <button class="btn cal-btn" type="button" id="calPrev" aria-label="Previous month">
-                                                <i class="bi bi-chevron-left"></i>
-                                            </button>
-                                            <strong class="cal-month-name" id="calMonthLabel"></strong>
-                                            <button class="btn cal-btn" type="button" id="calNext" aria-label="Next month">
-                                                <i class="bi bi-chevron-right"></i>
-                                            </button>
-                                        </div>
-                                        <div class="cal-weekdays text-body-secondary">
-                                            <div class="cal-weekday">Sun</div>
-                                            <div class="cal-weekday">Mon</div>
-                                            <div class="cal-weekday">Tue</div>
-                                            <div class="cal-weekday">Wed</div>
-                                            <div class="cal-weekday">Thu</div>
-                                            <div class="cal-weekday">Fri</div>
-                                            <div class="cal-weekday">Sat</div>
-                                        </div>
-                                        <div class="cal-days" id="calDays"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-3 small text-muted" id="selectedDateText">
-                                No date selected (Technician availability will apply)
-                            </div>
-                            <label class="form-label mt-3" for="timeSelect">Pick a time</label>
-                            <select class="form-select" id="timeSelect" disabled>
-                                <option value="" selected disabled>Select a time</option>
-                            </select>
-                            <div class="mt-3 p-2 bg-light rounded small">
-                                <div class="fw-semibold">Selected:</div>
-                                <div id="scheduleSummary">No date/time chosen yet.</div>
-                            </div>
-                            
-                            <div class="mt-4 d-flex gap-2">
-                                <button id="backToStep2" class="btn btn-secondary btn-lg" type="button">
-                                    <i class="bi bi-arrow-left"></i> Back to Staff Selection
-                                </button>
-                                
-                                
-                                <button id="nextToStep4" class="btn btn-primary btn-lg" type="button" disabled>
-                                    Next: Contact Info <i class="bi bi-arrow-right"></i>
-                                </button>
-                                <div class="btn-hint" id="hint-nextToStep4">Select a date and time to continue.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-12 col-lg-5">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">Reschedule & Cancellation</h5>
-                            <div class="alert alert-warning mb-0">
-                                <ul class="mb-0 ps-3">
-                                    <li>Free changes up to 24 hours before the appointment.</li>
-                                    <li>Changes within 24 hours may incur a late fee.</li>
-                                    <li>No-shows may require a deposit for future bookings.</li>
-                                </ul>
-                            </div>
-                            <div class="small text-muted mt-2">
-                                Dates shown depend on the technician you selected.
-                            </div>
-                            <div class="mt-4 p-3 bg-light rounded" id="step3BookingSummary" style="display: none;">
-                                <h5><i class="bi bi-check-circle-fill text-success"></i> Your booking summary:</h5>
-                                <ul class="mb-0">
-                                    <li><strong>Service:</strong> <span id="step3SummaryService"></span></li>
-                                    <li><strong>Technician:</strong> <span id="step3SummaryStaff"></span></li>
-                                    <li><strong>Price:</strong> <span id="step3SummaryPrice"></span></li>
-                                    <li><strong>Duration:</strong> <span id="step3SummaryDuration"></span></li>
-                                    <li><strong>Date:</strong> <span id="step3SummaryDate"></span></li>
-                                    <li><strong>Time:</strong> <span id="step3SummaryTime"></span></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> 
+          <fieldset class="question-fieldset">
+            <legend>
+              Based on the homepage, what seems to be Heimdal's main promise to customers?
+              <span class="hint-text">(Select one or more icons)</span>
+            </legend>
+
+            <div class="icon-grid">
+              <label class="icon-tile">
+                <input type="checkbox" name="heimdal_promise[]" value="consolidation">
+                <img src="images/consolidation-empty.png" alt="Consolidation icon">
+              </label>
+              <label class="icon-tile">
+                <input type="checkbox" name="heimdal_promise[]" value="compliance">
+                <img src="images/compliance-empty.png" alt="Compliance icon">
+              </label>
+              <label class="icon-tile">
+                <input type="checkbox" name="heimdal_promise[]" value="protection">
+                <img src="images/protection-empty.png" alt="Protection icon">
+              </label>
+              <label class="icon-tile">
+                <input type="checkbox" name="heimdal_promise[]" value="efficiency">
+                <img src="images/efficiency-empty.png" alt="Efficiency icon">
+              </label>
+            </div>
+          </fieldset>
         </div>
-
-        <!-- next is entering contact info -->
-        <div id="step4" class="step-section" style="display: none;">
-            <h2 class="mb-4">
-                <i class="bi bi-people-fill"></i> Step 4: Enter Contact Information
-            </h2>
-            <p class="lead mb-4">Enter your contact information here. You must provide email or phone</p>
-            
-            <div class="col-md-6 mb-3">
-                <label for="contactFirstName" class="form-label">First Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="contactFirstName" required autocomplete="given-name" placeholder="e.g. John">
-                <div class="invalid-feedback" id="feedback-firstName"></div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="contactLastName" class="form-label">Last Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="contactLastName" required autocomplete="family-name" placeholder="e.g. Smith">
-                <div class="invalid-feedback" id="feedback-lastName"></div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="contactEmail" class="form-label">
-                    Email <span class="field-required-note">(required if no phone)</span>
-                </label>
-                <input type="email" class="form-control" id="contactEmail" autocomplete="email" placeholder="e.g. john@example.com">
-                <div class="invalid-feedback" id="feedback-email"></div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="contactPhone" class="form-label">
-                    Phone Number <span class="field-required-note">(required if no email)</span>
-                </label>
-                <input type="tel" class="form-control" id="contactPhone" inputmode="numeric" autocomplete="tel" placeholder="e.g. 6135552453" maxlength="10">
-                <div class="form-text">10 digits only — no spaces, brackets, or dashes.</div>
-                <div class="invalid-feedback" id="feedback-phone"></div>
-            </div>
-
-            <div class="col-12">
-                <label for="contactNotes" class="form-label">
-                    Additional Notes (optional)
-                </label>
-                <textarea class="form-control" id="contactNotes" rows="3"></textarea>
-            </div>
-
-            <div class="mt-3 mb-2" id="contactFormProgress"></div>
-            <div class="mt-4 d-flex gap-2 flex-wrap">
-                <button id="backToStep3" class="btn btn-secondary btn-lg">
-                    <i class="bi bi-arrow-left"></i> Back to Scheduling
-                </button>
-                <button id="nextToStep5" class="btn btn-primary btn-lg" disabled>
-                    Continue to Submit <i class="bi bi-arrow-right"></i>
-                </button>
-                <div class="btn-hint" id="hint-nextToStep5">Fill in your name and at least one contact method.</div>
-            </div>
+      </div>
+      
+      <!-- TO DO [MULTI-STEP] wrap Q6 + submit button in: <div class="form-step" data-step="4"> … </div> -->
+      <!-- TO DO [UI] Q6: style the textarea in style.css → .question textarea -->
+      <div class="form-step" data-step="4" hidden>
+        <div class="question">
+          <div class="question-number"> Question 6 of 6 </div>
+          <label for="comments"
+            >Any additional comments or suggestions that you want to share?</label
+          >
+          <textarea
+            id="comments"
+            name="comments"
+            rows="5"
+            placeholder="Share your opinions about the UI of Heimdal Cybersecurity Solutions"
+          ></textarea>
         </div>
+      </div>
+      <!-- TO DO [MULTI-STEP] replace this single submit button with Back / Next / Submit buttons -->
+      <!--   Suggested structure:
+             <button type="button" id="btn-back"  class="submit-btn" style="display:none">← Back</button>
+             <button type="button" id="btn-next"  class="submit-btn">Next →</button>
+             <button type="submit" id="submit-btn" class="submit-btn" style="display:none">Submit My Answers</button>
+      -->
+      <!-- TO DO [UI] style the Back/Next buttons in style.css -->
+      <div class="question">
+        <div id="form-message" class="form-message" role="alert" aria-live="polite"></div>
+        <button type="button" id="btn-back"  class="submit-btn" style="display:none">← Back</button>
+        <button type="button" id="btn-next"  class="submit-btn">Next →</button>
+        <button type="submit" id="submit-btn" class="submit-btn">Submit My Answers</button>
+      </div>
+    </div>
+    </form>
 
-        <!-- last is to submit -->
-        <div id="step5" class="step-section" style="display: none;">
-        <h2 class="mb-4">
-            <i class="bi bi-check2-circle"></i> Step 5: Review & Submit
-        </h2>
-
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Booking Summary</h5>
-
-                <ul class="mb-3">
-                    <li><strong>Service:</strong> <span id="finalService"></span></li>
-                    <li><strong>Technician:</strong> <span id="finalStaff"></span></li>
-                    <li><strong>Price:</strong> <span id="finalPrice"></span></li>
-                    <li><strong>Duration:</strong> <span id="finalDuration"></span></li>
-                    <li><strong>Date:</strong> <span id="finalDate"></span></li>
-                    <li><strong>Time:</strong> <span id="finalTime"></span></li>
-                    <li><strong>Name:</strong> <span id="finalName"></span></li>
-                    <li><strong>Email:</strong> <span id="finalEmail"></span></li>
-                    <li><strong>Phone:</strong> <span id="finalPhone"></span></li>
-                </ul>
-
-                <!-- payments -->
-                <hr class="my-4">
-
-                <h5 class="card-title mb-3">
-                <i class="bi bi-credit-card-2-front"></i> Payment Details
-                </h5>
-
-                <div class="payment-icons mb-2" aria-label="Accepted payment methods">
-                <i class="bi bi-credit-card" title="Credit card" aria-hidden="true"></i>
-                <i class="bi bi-credit-card-2-front" title="Card" aria-hidden="true"></i>
-                <i class="bi bi-credit-card-2-back" title="Card" aria-hidden="true"></i>
-                <i class="bi bi-shield-lock" title="Secure" aria-hidden="true"></i>
-                </div>
-
-                <div class="row g-3">
-                <div class="col-12">
-                    <label for="cardName" class="form-label">Name on card <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
-                    <input type="text" class="form-control" id="cardName" autocomplete="cc-name" placeholder="e.g. John Smith">
-                    </div>
-                    <div class="invalid-feedback" id="feedback-cardName"></div>
-                </div>
-
-                <div class="col-12">
-                    <label for="cardNumber" class="form-label">Card number <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
-                    <input type="text" class="form-control" id="cardNumber"
-                            inputmode="numeric" autocomplete="cc-number"
-                            placeholder="1234 5678 9012 3456" maxlength="19">
-                    </div>
-                    <div class="invalid-feedback" id="feedback-cardNumber"></div>
-                </div>
-
-                <div class="col-6 col-md-4">
-                    <label for="cardExp" class="form-label">Expiry (MM/YY) <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-calendar2-check"></i></span>
-                    <input type="text" class="form-control" id="cardExp"
-                            inputmode="numeric" autocomplete="cc-exp"
-                            placeholder="MM/YY" maxlength="5">
-                    </div>
-                    <div class="invalid-feedback" id="feedback-cardExp"></div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <label for="cardCvv" class="form-label">CVV <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
-                    <input type="password" class="form-control" id="cardCvv"
-                            inputmode="numeric" autocomplete="cc-csc"
-                            placeholder="123" maxlength="4">
-                    </div>
-                    <div class="invalid-feedback" id="feedback-cardCvv"></div>
-                </div>
-
-                <div class="col-12 col-md-5">
-                    <label for="billingPostal" class="form-label">Billing postal code <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                    <input type="text" class="form-control" id="billingPostal"
-                            autocomplete="postal-code" placeholder="e.g. K1A0B1" maxlength="7">
-                    </div>
-                    <div class="invalid-feedback" id="feedback-billingPostal"></div>
-                </div>
-                </div>
-
-                <div class="mt-3 mb-2" id="paymentFormProgress"></div>
-
-                <div class="alert alert-info small mb-0">
-                    Submitting will confirm your appointment.
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-4 d-flex gap-2">
-            <button id="backToStep4" class="btn btn-secondary btn-lg" type="button">
-            <i class="bi bi-arrow-left"></i> Back to Contact Info
-            </button>
-            <button id="submitBooking" class="btn btn-success btn-lg" type="button">
-            Submit Booking <i class="bi bi-send"></i>
-            </button>
-        </div>
-
-        <div class="mt-3" id="submitResult" style="display:none;"></div>
-        </div>
-
-
-    </main>
-
-    <!-- footer section (missing the signature of the team) -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Cycler Forever</h5>
-                    <p class="small">Let us keep your bicycle wheel spinning until the world ends</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact Us</h5>
-                    <p class="small mb-0">123 Biking Lane, Ottawa, ON K2A 0A4</p>
-                    <p class="small mb-0">Phone: (613) 555 (2453)</p>
-                    <p class="small mb-0">Email: info@cyclerForever.ca</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Policies</h5>
-                    <p class="small mb-0">
-                        <i class="bi bi-check-circle"></i> Free cancellation up to 24 hours before appointment<br>
-                        <i class="bi bi-check-circle"></i> Easy rescheduling available<br>
-                        <i class="bi bi-check-circle"></i> Repairs come with a 15-day warranty
-                    </p>
-                </div>
-            </div>
-        </div>
+    <footer>
+      <p>
+        Website designed by Salma Ahmed, Steven Feng Peng, and Sahara Sammy ☆
+      </p>
     </footer>
 
-    <!-- Bootstrap5 JS bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- and custom JavaScript -->
     <script src="scripts.js"></script>
-</body>
+  </body>
 </html>

@@ -1,0 +1,769 @@
+/* TO DO [UI] Theme variables: change any value here and both pages update automatically.
+   --moon-bg / --moon-surface control the dark backgrounds.
+   --accent / --hover control the blue highlights (buttons, active nav, bar fills).
+   --moon-text is the default body text colour. */
+/*let's make the style of our page lunar themed*/
+:root {
+  --moon-bg: rgb(15, 23, 42);
+  --moon-surface: #1e293b;
+  --moon-light: #64748b;
+  --moon-glow: #94a3b8;
+  --moon-text: #e2e8f0;
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --accent: #3b82f6;
+  --hover: #60a5fa;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: var(--moon-bg);
+  color: var(--moon-text);
+  line-height: 1.6;
+
+  /* optional addition: pretty background */
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)),
+    url(images/background.jpg);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+h1 {
+  text-align: center;
+  color: var(--moon-text);
+  margin-bottom: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* footer for signature at bottom of the page*/
+footer {
+  width: 100%;
+  background-color: #070e1d;
+  color: #64748b;
+  text-align: right;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+.question-number{
+  display : inline-block;
+  margin-bottom: 10px;
+  padding: 4px 10px;
+  border-radius: 8px;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  background: rgba(22, 67, 139, 0.2);
+  color: var(--hover);
+  border: 1px solid rgba(47, 92, 164, 0.35)
+}
+
+/* added wrapper for survey content */
+.survey {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.website-link {
+  display: block;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 18px;
+  color: var(--moon-glow);
+  text-decoration: none;
+  transition:
+    color 0.3s ease,
+    transform 0.2s ease;
+  font-weight: 500;
+}
+
+.website-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  transform: translateY(-1px);
+}
+
+.ourimage-link {
+  display: block;
+  text-align: center;
+  margin: 20px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ourimage-link img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  padding: 8px;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.ourimage-link img:hover {
+  transform: scale(1.02);
+}
+
+.question {
+  margin: 25px 0;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border);
+  transition: box-shadow 0.3s ease;
+}
+
+.question:hover {
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--moon-text);
+}
+
+input[type='text'],
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 4px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-sizing: border-box;
+  background-color: var(--moon-surface);
+  color: var(--moon-text);
+  font-family: inherit;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+input[type='text']:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.radio-group label,
+.checkbox-group label {
+  font-weight: normal;
+  margin-left: 24px;
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.radio-group label:hover,
+.checkbox-group label:hover {
+  color: var(--accent);
+}
+
+.radio-group input[type='radio'],
+.checkbox-group input[type='checkbox'] {
+  margin-right: 8px;
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* submit button centered and styled*/
+.submit-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: var(--hover);
+  transform: translateY(-1px);
+}
+
+/* 2x2 grid - question 5 */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+
+/* Tile */
+.icon-tile {
+  background: var(--moon-surface);
+  border: 1.5px solid var(--card-border);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.15s ease, border 0.15s ease, box-shadow 0.15s ease;
+}
+
+.icon-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+/* Hide checkbox but keep it functional */
+.icon-tile input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Icon image(white filter) */
+.icon-tile img {
+  width: 100%;
+  height: 110px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 8px;
+  filter: brightness(0) invert(1);
+}
+
+/* Selected state: highlight image + glow */
+.icon-tile input:checked + img {
+  outline: 3px solid var(--moon-surface);
+  outline-offset: 3px;
+  border-radius: 12px;
+  filter: brightness(0) invert(1) sepia(0.4) saturate(100%) hue-rotate(85deg) drop-shadow(0 0 10px rgba(30, 64, 175, 0.9));
+}
+
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Zoom container (moved from index.html inline <style> into the shared CSS)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.zoom-container {
+  position: relative;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.zoom-container img {
+  transition: transform 0.3s ease;
+  transform-origin: center center;
+}
+
+.zoom-container:hover img {
+  transform: scale(2);
+}
+
+.zoom-container.zoomed {
+  cursor: zoom-out;
+}
+
+.zoom-container.zoomed img {
+  transform: scale(1);
+}
+
+.nav-link:focus-visible,
+.submit-btn:focus-visible,
+.skip-link:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--hover);
+  outline-offset: 2px;
+}
+
+#step-indicator {
+  max-width: 800px;
+  margin: 24px auto 0;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  color: var(--moon-glow);
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
+.form-step[hidden] {
+  display: none !important;
+}
+
+.question-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.question-fieldset legend {
+  width: 100%;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--moon-text);
+}
+
+.hint-text {
+  display: inline-block;
+  margin-left: 6px;
+  font-weight: 400;
+  color: var(--moon-light);
+  font-size: 0.9rem;
+}
+
+.form-navigation {
+  margin-top: 28px;
+}
+
+.nav-button-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nav-button-row .submit-btn {
+  width: auto;
+  flex: 1 1 180px;
+  margin-top: 0;
+}
+
+.header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.skip-link {
+  color: var(--moon-glow);
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.skip-link:hover {
+  color: var(--hover);
+}
+
+
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 28px;
+  background-color: #070e1d;
+  border-bottom: 1px solid var(--card-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-title {
+  color: var(--moon-glow);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 16px;
+}
+
+.nav-link {
+  color: var(--moon-glow);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--hover);
+}
+
+/* Highlight the currently active page link */
+.nav-link--active {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--accent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Form feedback message – success / error displayed below the submit button
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.form-message {
+  min-height: 24px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  padding: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+.form-message--success {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 10px 14px;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.form-message--error {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  padding: 10px 14px;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+
+.pie-chart {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+}
+
+.pie-chart-visual {
+  width: 180px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-clip: padding-box;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 8px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.pie-chart-empty {
+  color: var(--moon-light);
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: center;
+}
+/* Outer wrapper constrains width and centres content */
+.analyst-wrapper {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px 60px;
+  box-sizing: border-box;
+}
+
+/* Header row with title + refresh button */
+.analyst-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.analyst-subtitle {
+  color: var(--moon-light);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* Keep the refresh button compact */
+.analyst-refresh-btn {
+  width: auto;
+  padding: 10px 20px;
+  margin-top: 6px;
+}
+
+/* ── Summary stat cards ── */
+.stats-overview {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 160px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--moon-light);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* ── Charts grid ── */
+.charts-section {
+  margin-bottom: 48px;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.chart-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Wide variant spans both grid columns (used for Q4 which has more labels) */
+.chart-card--wide {
+  grid-column: 1 / -1;
+}
+
+.chart-card h3 {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  color: var(--moon-glow);
+}
+
+/* ── Horizontal bar chart rows ── */
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Label column – fixed width so bars are left-aligned */
+.bar-label {
+  flex: 0 0 180px;
+  font-size: 0.8rem;
+  color: var(--moon-text);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Track background (full width) */
+.bar-track {
+  flex: 1;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Animated fill */
+.bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 8px;
+  transition: width 0.4s ease;
+}
+
+/* Response count to the right of the bar */
+.bar-count {
+  flex: 0 0 70px;
+  text-align: right;
+  font-size: 0.78rem;
+  color: var(--moon-light);
+}
+
+/* Empty-state placeholder inside a chart */
+.no-data {
+  color: var(--moon-light);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* ── Individual response cards ── */
+.responses-section {
+  margin-top: 48px;
+}
+
+.response-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Fade-out animation triggered by analyst.js before removal */
+.response-card--deleting {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.response-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.response-date {
+  font-size: 0.85rem;
+  color: var(--moon-glow);
+  font-weight: 500;
+}
+
+.response-id {
+  font-size: 0.75rem;
+  color: var(--moon-light);
+  margin-left: 12px;
+}
+
+/* Red delete button */
+.delete-btn {
+  padding: 6px 14px;
+  background: transparent;
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.delete-btn:hover {
+  background: rgba(248, 113, 113, 0.15);
+}
+
+.response-body {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.response-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.field-label {
+  font-size: 0.7rem;
+  color: var(--moon-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.field-value {
+  font-size: 0.9rem;
+  color: var(--moon-text);
+}
+
+/* Pill badge for readability / aesthetics ratings */
+.field-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Loading / error message styles for the responses area */
+.loading-msg {
+  color: var(--moon-light);
+  font-style: italic;
+  margin: 20px 0;
+}
+
+.error-msg {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 20px 0;
+}
+
+/* ─ Responsive: single column on small screens ─
+   TO DO [UI] Responsive: add more breakpoints here if needed (e.g. max-width: 900px
+   for a two-column layout on tablets).
+   TO DO [MULTI-STEP] Step indicator: add responsive rules for .step-indicator here. */
+@media (max-width: 640px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-card--wide {
+    grid-column: 1;
+  }
+
+  .response-body {
+    grid-template-columns: 1fr;
+  }
+
+  .bar-label {
+    flex: 0 0 120px;
+  }
+
+  #step-indicator {
+    margin: 18px 16px 0;
+    font-size: 0.92rem;
+    padding: 10px 12px;
+  }
+
+  .nav-button-row {
+    flex-direction: column;
+  }
+
+  .nav-button-row .submit-btn {
+    width: 100%;
+  }
+
+  .header-actions {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .analyst-refresh-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,143 @@
+<!-- analyst.html – Analyst (server-side) dashboard view.
+     This page is only meaningful when the Express backend is running because it
+     fetches live data from the REST API.  Open it at:
+       http://localhost:3000/analyst.html
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analyst Dashboard – Heimdal Survey Results</title>
+    <!-- Shared stylesheet with the survey page -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+
+    <!-- ── Top navigation bar (shared with survey page) ── -->
+    <nav class="top-nav" aria-label="Page navigation">
+      <span class="nav-title">SEG3125 Lab 6 – Group 05</span>
+      <div class="nav-links">
+        <!-- Link back to the client-side survey form -->
+        <a href="index.html"   class="nav-link">Survey Form</a>
+        <!-- Active page indicator -->
+        <a href="analyst.html" class="nav-link nav-link--active">Analyst View</a>
+      </div>
+    </nav>
+
+    <!-- ── Main analyst wrapper ── -->
+    <div class="analyst-wrapper">
+
+      <!-- Page header with title and refresh control -->
+      <!-- TO DO [UI] Header: adjust .analyst-header styles in style.css → Analyst Dashboard section -->
+      <!-- TO DO [A11Y] Header: consider adding role="banner" or a skip-to-content link -->
+      <header class="analyst-header">
+        <div>
+          <h1>Survey Results Dashboard</h1>
+          <!-- Subtitle clarifies this is the server-side / analyst view -->
+          <p class="analyst-subtitle">
+            Analyst (server-side) view — Heimdal Cybersecurity Solutions Survey
+          </p>
+        </div>
+        <div class="header-actions">
+          <!-- skip-to-content link (charts) -->
+          <a href="#charts-section" class="skip-link">Skip to statistics</a>
+          <!-- Refresh button re-fetches data without a full page reload -->
+          <button id="btn-refresh" class="submit-btn analyst-refresh-btn">
+            ↻ Refresh Data
+          </button>
+        </div>
+      </header>
+
+      <!-- ── Summary stat cards ── -->
+      <section class="stats-overview" aria-label="Response summary">
+
+        <!-- Total number of responses received -->
+        <div class="stat-card">
+          <div class="stat-number" id="total-count">—</div>
+          <div class="stat-label">Total Responses</div>
+        </div>
+
+        <!-- Date of the most recent submission -->
+        <div class="stat-card">
+          <div class="stat-number" id="latest-date">—</div>
+          <div class="stat-label">Latest Submission</div>
+        </div>
+
+      </section>
+
+      <!-- ── Aggregate statistics / charts section ── -->
+      <!-- TO DO [CHARTS] Charts section: add a pie-chart container next to each bar chart -->
+      <!--   Suggested structure inside each .chart-card:
+             <div class="bar-chart"  id="bars-readability"></div>
+             <div class="pie-chart" id="pie-readability"></div>   ← add this
+             Then register the new IDs in analyst.js → renderCharts() chartConfig array.
+      -->
+      <!-- TO DO [UI] Chart cards: adjust .chart-card, .bar-row, .bar-fill in style.css -->
+      <section id="charts-section" class="charts-section" aria-label="Aggregate statistics">
+        <h2>Aggregate Statistics</h2>
+
+        <div class="charts-grid">
+
+          <!-- Q2 – Readability (single-choice radio) -->
+          <div class="chart-card">
+            <h3>Q2 — Readability Rating</h3>
+            <!-- Bar chart rows are injected here by analyst.js -->
+            <div class="bar-chart" id="bars-readability"></div>
+            <div class="pie-chart" id="pie-readability"></div>
+          </div>
+
+          <!-- Q3 – Aesthetics (single-choice dropdown) -->
+          <div class="chart-card">
+            <h3>Q3 — Aesthetics Rating</h3>
+            <div class="bar-chart" id="bars-aesthetics"></div>
+            <div class="pie-chart" id="pie-aesthetics"></div>
+          </div>
+
+          <!-- Q4 – UI Aspects (multi-select checkboxes, spans full width) -->
+          <div class="chart-card chart-card--wide">
+            <h3>Q4 — UI Aspects Noticed</h3>
+            <div class="bar-chart" id="bars-uiAspects"></div>
+            <div class="pie-chart" id="pie-uiAspects"></div>
+          </div>
+
+          <!-- Q5 – Heimdal Promise (icon checkboxes) -->
+          <div class="chart-card">
+            <h3>Q5 — Heimdal's Main Promise</h3>
+            <div class="bar-chart" id="bars-heimdalPromise"></div>
+            <div class="pie-chart" id="pie-heimdalPromise"></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── Individual responses section ── -->
+      <!-- TO DO [UI] Response cards: adjust .response-card, .response-field, .delete-btn in style.css -->
+      <section class="responses-section" aria-label="Individual survey responses">
+        <h2>Individual Responses</h2>
+
+        <!-- Shown while the fetch is in progress -->
+        <div id="responses-loading" class="loading-msg">
+          Loading responses from the server…
+        </div>
+
+        <!-- Shown if the fetch fails (server not running, network error, etc.) -->
+        <div id="responses-error" class="error-msg" style="display: none;"></div>
+
+        <!-- Response cards are injected here by analyst.js -->
+        <div id="responses-container" aria-live="polite"></div>
+
+      </section>
+    </div><!-- /.analyst-wrapper -->
+
+    <!-- Footer signature -->
+    <footer>
+      <p>Website designed by Salma Ahmed, Steven Feng Peng, and Sahara Sammy ☆</p>
+    </footer>
+
+    <!-- Analyst dashboard JS: fetches data and renders charts + response cards -->
+    <script src="analyst.js"></script>
+
+  </body>
+</html>
